@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <title>我的 AI 助手</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 16px; }
+    #log { border: 1px solid #ddd; border-radius: 8px; padding: 16px; min-height: 300px; }
+    .user { color: #0b5; margin: 8px 0; }
+    .ai { color: #333; margin: 8px 0; white-space: pre-wrap; }
+    #bar { display: flex; gap: 8px; margin-top: 12px; }
+    input { flex: 1; padding: 10px; font-size: 15px; }
+    button { padding: 10px 20px; font-size: 15px; }
+  </style>
+</head>
+<body>
+  <h2>我的 AI 助手</h2>
+  <div id="log"></div>
+  <div id="bar">
+    <input id="q" placeholder="输入问题，回车发送" />
+    <button onclick="send()">发送</button>
+  </div>
+
+  <script>
+    const log = document.getElementById("log");
+    const q = document.getElementById("q");
+
+    q.addEventListener("keydown", e => {
+      if (e.key === "Enter") send();
+    });
+
+    async function send() {
+      const text = q.value.trim();
+      if (!text) return;
+      q.value = "";
+
+      log.innerHTML += `<div class="user">你：${text}</div>`;
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      log.innerHTML += `<div class="ai">AI：${data.answer || data.error}</div>`;
+      log.scrollTop = log.scrollHeight;
+    }
+    async function loadHistory() {
+  const res = await fetch("/history");
+  const data = await res.json();
+  for (const m of data.messages) {
+    const who = m.role === "user" ? "你" : "AI";
+    const cls = m.role === "user" ? "user" : "ai";
+    log.innerHTML += `<div class="${cls}">${who}：${m.content}</div>`;
+  }
+  log.scrollTop = log.scrollHeight;
+}
+
+loadHistory();
+  </script>
+ 
+</body>
+</html>
