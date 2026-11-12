@@ -2,6 +2,11 @@
 
 基于 FastAPI + DeepSeek API 的网页版 AI 助手，对话记录持久化到 SQLite。
 
+## 目录结构
+
+- `app.py` / `db.py` / `index.html`：项目主代码
+- `practice/`：Python 学习练习（基础语法到数据库）
+
 ## 功能
 
 - 浏览器聊天界面，支持多轮对话
