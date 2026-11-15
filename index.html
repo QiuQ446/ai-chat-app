@@ -40,6 +40,8 @@
       font-size: 13px;
     }
     .ai pre code { background: none; padding: 0; }
+
+    /* 第一个元素不要上边距，避免 "AI:" 后面空一大截 */
     .ai > :first-child { margin-top: 0; }
 
     #bar { display: flex; gap: 8px; margin-top: 12px; }
@@ -55,6 +57,7 @@
   <div id="bar">
     <input id="q" placeholder="输入问题，回车发送" />
     <button onclick="send()">发送</button>
+    <button onclick="clearChat()">清空</button>
   </div>
 
   <script>
@@ -73,6 +76,7 @@
 
       // 用户输入原样显示（不渲染 Markdown）
       log.innerHTML += `<div class="user">你：${text}</div>`;
+      log.scrollTop = log.scrollHeight;
 
       try {
         const res = await fetch("/chat", {
@@ -89,6 +93,14 @@
       }
 
       log.scrollTop = log.scrollHeight;
+    }
+
+    // 清空所有对话
+    async function clearChat() {
+      if (!confirm("确定清空所有对话？清空后无法恢复。")) return;
+
+      await fetch("/history", { method: "DELETE" });
+      location.reload();
     }
 
     // 页面加载时拉历史

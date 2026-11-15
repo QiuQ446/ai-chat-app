@@ -39,3 +39,9 @@ def load_messages(limit=20):
     rows = cur.fetchall()
     conn.close()
     return list(reversed(rows))
+
+def clear_messages():
+    conn = sqlite3.connect(DB)
+    conn.execute("DELETE FROM messages")
+    conn.commit()
+    conn.close()

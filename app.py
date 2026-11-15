@@ -28,6 +28,11 @@ def history():
     rows = db.load_messages(20)
     return {"messages": [{"role": r, "content": c} for r, c in rows]}
 
+@app.delete("/history")
+def clear_history():
+    db.clear_messages()
+    return {"ok": True}
+
 @app.post("/chat")
 def chat(req: ChatRequest):
     db.save_message("user", req.message) 
