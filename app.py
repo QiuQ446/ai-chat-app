@@ -28,6 +28,10 @@ def history():
     rows = db.load_messages(20)
     return {"messages": [{"role": r, "content": c} for r, c in rows]}
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.delete("/history")
 def clear_history():
     db.clear_messages()
