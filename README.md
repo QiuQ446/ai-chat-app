@@ -21,24 +21,42 @@
 
 ## 本地运行
 
-1. 安装依赖
+## 部署（Ubuntu 服务器）
 
+### 1. 准备
+- Ubuntu 22.04 服务器（2 核 2G）
+- 安全组放行 8000 端口
+
+### 2. 安装基础环境
 ```bash
-pip install fastapi uvicorn requests
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv git
 ```
 
-2. 创建 `secret.py`，填入你的 key
+### 3. 拉取代码
+```bash
+git clone https://github.com/QiuQ446/ai-chat-app.git
+cd ai-chat-app
+```
+
+### 4. 创建虚拟环境并安装依赖
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 5. 配置密钥
+创建 `secret.py`：
 
 ```python
 API_KEY = "你的 DeepSeek API Key"
 ```
 
-> 注意：`secret.py` 已被 `.gitignore` 排除，不会出现在仓库中，必须自己创建。
-
-3. 启动服务
-
+### 6. 后台启动
 ```bash
-uvicorn app:app --reload
+nohup uvicorn app:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
 ```
 
-4. 浏览器打开 http://127.0.0.1:8000
+### 7. 验证
+浏览器访问 `http://服务器公网IP:8000/health`，返回 `{"status":"ok"}` 即部署成功。
